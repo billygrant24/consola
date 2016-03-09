@@ -2,6 +2,8 @@
 
 namespace Consola\Command;
 
+use Closure;
+
 class ClosureCommand extends CommandAbstract
 {
     public function __construct($callback)
@@ -16,8 +18,11 @@ class ClosureCommand extends CommandAbstract
      */
     public function handle()
     {
-        $handler = $this->handler;
+        $handler = Closure::bind($this->handler, $this);
 
-        return $handler($this);
+        return $handler(
+            collect($this->argument()),
+            collect($this->option())
+        );
     }
 }

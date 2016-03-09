@@ -38,23 +38,36 @@ class Application extends SymfonyApplication implements ApplicationContract
         $this->setCatchExceptions(true);
     }
 
-    public function bind($signature, $description = null, $command = null)
+    public function setTemplate($template)
     {
-        if ($signature instanceof SymfonyCommand) {
-            return $this->addToParent($signature);
-        }
+        $this->template = $template;
+    }
 
-        if (is_null($command)) {
-            $command = $description;
-            $description = null;
-        }
-
-        if ($command instanceof Closure) {
-            $command = new ClosureCommand($command);
+    public function addCommand($name, $command = null)
+    {
+        if ($name instanceof SymfonyCommand) {
+            return $this->addToParent($command);
         }
 
         if (is_string($command)) {
             $command = new $command();
+        }
+
+        if ($command instanceof Closure) {
+            $fn = new \ReflectionFunction($command);
+            $doc = new \phpDocumentor\Reflection\DocBlock($fn->getDocComment());
+
+            $modifiers = array_map(function ($m) {
+                return '{' . trim($m->getContent()) . '}';
+            }, array_merge($doc->getTagsByName('arg'), $doc->getTagsByName('opt')));
+
+            $signature = [];
+            $signature['name'] = $name;
+            $signature['modifiers'] = $modifiers ? implode(' ', $modifiers) : '';
+
+            $command = new ClosureCommand($command);
+            $command->setDescription(trim($doc->getShortDescription()));
+            $command->setSignature(implode(' ', $signature));
         }
 
         // At this stage we should have an instance of Command.
@@ -65,8 +78,7 @@ class Application extends SymfonyApplication implements ApplicationContract
             );
         }
 
-        $command->setDescription($description);
-        $command->setSignature($signature);
+        $command->setTemplate($this->template);
         $command->setUp();
 
         return $this->add($command);
