@@ -1,0 +1,27 @@
+{
+    "name": "williamgb/consola",
+    "description": "A Slim PHP take on building console applications.",
+    "type": "framework",
+    "license": "MIT",
+    "homepage": "http://william.scot",
+    "support": {
+        "issues": "https://github.com/williamgb/consola/issues",
+        "source": "https://github.com/williamgb/consola"
+    },
+    "authors": [
+        {
+            "name": "William Grant-Buckley",
+            "email": "hello@william.scot"
+        }
+    ],
+    "require": {
+        "php": ">=5.5.9",
+        "illuminate/console": "^5.2",
+        "illuminate/container": "^5.2"
+    },
+    "autoload": {
+      "psr-4": {
+        "Consola\\": "src"
+      }
+    }
+}
