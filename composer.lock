@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "a40609e8fcea55f4d871f35a092cd916",
-    "content-hash": "6bc7338144e8a79d096fcf112945e87e",
+    "hash": "30b26db5f447a41bffd800f9eba26636",
+    "content-hash": "1eb962b06930a72350e0a8f3297c8a41",
     "packages": [
         {
             "name": "doctrine/inflector",
@@ -124,49 +124,6 @@
             "description": "The Illuminate Console package.",
             "homepage": "http://laravel.com",
             "time": "2016-02-22 14:14:58"
-        },
-        {
-            "name": "illuminate/container",
-            "version": "v5.2.21",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/illuminate/container.git",
-                "reference": "ba7a8b3c24535ab102ebe9738a0003846c372b95"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/illuminate/container/zipball/ba7a8b3c24535ab102ebe9738a0003846c372b95",
-                "reference": "ba7a8b3c24535ab102ebe9738a0003846c372b95",
-                "shasum": ""
-            },
-            "require": {
-                "illuminate/contracts": "5.2.*",
-                "php": ">=5.5.9"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "5.2-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Illuminate\\Container\\": ""
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Taylor Otwell",
-                    "email": "taylorotwell@gmail.com"
-                }
-            ],
-            "description": "The Illuminate Container package.",
-            "homepage": "http://laravel.com",
-            "time": "2016-02-22 06:42:06"
         },
         {
             "name": "illuminate/contracts",
@@ -323,58 +280,6 @@
                 "tokenizer"
             ],
             "time": "2015-12-05 17:17:57"
-        },
-        {
-            "name": "league/plates",
-            "version": "3.1.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/thephpleague/plates.git",
-                "reference": "2d8569e9f140a70d6a05db38006926f7547cb802"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/plates/zipball/2d8569e9f140a70d6a05db38006926f7547cb802",
-                "reference": "2d8569e9f140a70d6a05db38006926f7547cb802",
-                "shasum": ""
-            },
-            "require-dev": {
-                "mikey179/vfsstream": "~1.4.0",
-                "phpunit/phpunit": "~4.0",
-                "squizlabs/php_codesniffer": "~1.5"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "3.0-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "League\\Plates\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Jonathan Reinink",
-                    "email": "jonathan@reinink.ca",
-                    "role": "Developer"
-                }
-            ],
-            "description": "Plates, the native PHP template system that's fast, easy to use and easy to extend.",
-            "homepage": "http://platesphp.com",
-            "keywords": [
-                "league",
-                "package",
-                "templates",
-                "templating",
-                "views"
-            ],
-            "time": "2015-07-09 02:14:40"
         },
         {
             "name": "nesbot/carbon",

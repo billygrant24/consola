@@ -30,17 +30,14 @@ class Application extends SymfonyApplication implements ApplicationContract
      * @param  string  $version
      * @return void
      */
-    public function __construct()
+    public function __construct($container = null)
     {
         parent::__construct('Consola', self::VERSION);
 
+        $this->container = $container;
+
         $this->setAutoExit(true);
         $this->setCatchExceptions(true);
-    }
-
-    public function setTemplate($template)
-    {
-        $this->template = $template;
     }
 
     public function addCommand($name, $command = null)
@@ -78,7 +75,7 @@ class Application extends SymfonyApplication implements ApplicationContract
             );
         }
 
-        $command->setTemplate($this->template);
+        $command->setContainer($this->container);
         $command->setUp();
 
         return $this->add($command);

@@ -13,18 +13,9 @@ abstract class CommandAbstract extends ConsoleCommand implements Command
         //
     }
 
-    public function setTemplate($template)
+    public function setContainer($container)
     {
-        $this->template = $template;
-    }
-
-    public function render($name, $data = [])
-    {
-        $template = $this->template->render($name, array_merge([
-            'cmd' => $this,
-        ], $data));
-
-        return $this->line(trim($template));
+        $this->container = $container;
     }
 
     /**
