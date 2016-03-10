@@ -3,12 +3,8 @@
 namespace Consola;
 
 use Closure;
-use Consola\Command\ClosureCommand;
-use Consola\Exception\IllegalCommandException;
 use Exception;
-use Illuminate\Contracts\Console\Application as ApplicationContract;
-use phpDocumentor\Reflection\DocBlockFactory;
-use ReflectionFunction;
+use Illuminate\Contracts\Console\Application;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputOption;
@@ -16,7 +12,7 @@ use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Console\Application as SymfonyApplication;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
 
-class Application extends SymfonyApplication implements ApplicationContract
+class Console extends SymfonyApplication implements Application
 {
     const VERSION = 'v0.0.1';
 
@@ -53,36 +49,14 @@ class Application extends SymfonyApplication implements ApplicationContract
         }
 
         if ($command instanceof Closure) {
-            $fn = new ReflectionFunction($command);
-            $command = new ClosureCommand($command);
-
-            if ($fn->getDocComment()) {
-                $factory = DocBlockFactory::createInstance();
-                $doc = $factory->create($fn->getDocComment());
-                
-                $signature = array_map(function ($v) {
-                    return '{' . trim($v) . '}';
-                }, array_merge(
-                    $doc->getTagsByName('arg'),
-                    $doc->getTagsByName('opt')
-                ));
-
-                array_unshift($signature, $name);
-
-                $command->setSignature(implode(' ', $signature));
-                $command->setDescription(trim($doc->getSummary()));
-            } else {
-                $command->setSignature($name);
-            }
+            $command = new Command($name, $command);
         }
 
-        if ( ! $command instanceof Command) {
+        if ( ! $command instanceof CommandInterface) {
             throw new IllegalCommandException(
                 sprintf('Commands should implement %s', Command::class)
             );
         }
-
-        $command->setUp();
 
         return $this->add($command);
     }
