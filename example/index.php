@@ -7,9 +7,9 @@ use Consola\Application;
 $app = new Application();
 
 /**
- * Send a greeting to the person specified.
+ * Send a greeting to the person specified
  *
- * @arg person    : The name of the person you wish to greet.
+ * @arg person    : The name of the person you wish to greet
  * @opt --s|shout : Be extra enthusiastic and use all caps
  */
 $app->addCommand('greet', function ($args, $opts) {
@@ -19,7 +19,19 @@ $app->addCommand('greet', function ($args, $opts) {
 });
 
 /**
- * Bid goodbye to the person specified.
+ * Check Git repository status
+ */
+$app->addCommand('git:status', function ($args, $opts) {
+    if ( ! is_dir(__DIR__ . '/../.git')) {
+        $this->error('No Git repository initialised');
+        exit(0);
+    }
+
+    $this->line(shell_exec('git status'));
+});
+
+/**
+ * Bid goodbye to the person specified
  * @arg person : The name of the person you wish bid goodbye
  */
 $app->addCommand('goodbye', function ($args, $opts) {

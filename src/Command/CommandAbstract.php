@@ -2,6 +2,8 @@
 
 namespace Consola\Command;
 
+use Closure;
+use Consola\Command;
 use Illuminate\Console\Command as ConsoleCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -10,12 +12,6 @@ abstract class CommandAbstract extends ConsoleCommand implements Command
 {
     public function __construct()
     {
-        //
-    }
-
-    public function setContainer($container)
-    {
-        $this->container = $container;
     }
 
     /**
@@ -43,12 +39,17 @@ abstract class CommandAbstract extends ConsoleCommand implements Command
 
     public function setDescription($description)
     {
-        $this->description = $this->description ?? $description;
+        $this->description = $this->description ? $this->description : $description;
     }
 
     public function setSignature($signature)
     {
-        $this->signature = $this->signature ?? $signature;
+        $this->signature = $this->signature ? $this->signature : $signature;
+    }
+
+    protected function hasHandler()
+    {
+        return $this->handler instanceof Closure;
     }
 
     /**
@@ -60,6 +61,15 @@ abstract class CommandAbstract extends ConsoleCommand implements Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        if ($this->hasHandler()) {
+            $handler = Closure::bind($this->handler, $this);
+
+            return $handler(
+                collect($this->argument()),
+                collect($this->option())
+            );
+        }
+
         return $this->handle();
     }
 }

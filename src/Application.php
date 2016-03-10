@@ -3,11 +3,12 @@
 namespace Consola;
 
 use Closure;
-use Consola\Command\Command;
 use Consola\Command\ClosureCommand;
 use Consola\Exception\IllegalCommandException;
 use Exception;
 use Illuminate\Contracts\Console\Application as ApplicationContract;
+use phpDocumentor\Reflection\DocBlockFactory;
+use ReflectionFunction;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputOption;
@@ -30,14 +31,19 @@ class Application extends SymfonyApplication implements ApplicationContract
      * @param  string  $version
      * @return void
      */
-    public function __construct($container = null)
+    public function __construct()
     {
         parent::__construct('Consola', self::VERSION);
 
-        $this->container = $container;
+        set_exception_handler([$this, 'handleError']);
 
         $this->setAutoExit(true);
         $this->setCatchExceptions(true);
+    }
+
+    public function handleError(Exception $e)
+    {
+        return parent::renderException($e, new ConsoleOutput());
     }
 
     public function addCommand($name, $command = null)
@@ -46,28 +52,29 @@ class Application extends SymfonyApplication implements ApplicationContract
             return $this->addToParent($command);
         }
 
-        if (is_string($command)) {
-            $command = new $command();
-        }
-
         if ($command instanceof Closure) {
-            $fn = new \ReflectionFunction($command);
-            $doc = new \phpDocumentor\Reflection\DocBlock($fn->getDocComment());
-
-            $modifiers = array_map(function ($m) {
-                return '{' . trim($m->getContent()) . '}';
-            }, array_merge($doc->getTagsByName('arg'), $doc->getTagsByName('opt')));
-
-            $signature = [];
-            $signature['name'] = $name;
-            $signature['modifiers'] = $modifiers ? implode(' ', $modifiers) : '';
-
+            $fn = new ReflectionFunction($command);
             $command = new ClosureCommand($command);
-            $command->setDescription(trim($doc->getShortDescription()));
-            $command->setSignature(implode(' ', $signature));
-        }
 
-        // At this stage we should have an instance of Command.
+            if ($fn->getDocComment()) {
+                $factory = DocBlockFactory::createInstance();
+                $doc = $factory->create($fn->getDocComment());
+                
+                $signature = array_map(function ($v) {
+                    return '{' . trim($v) . '}';
+                }, array_merge(
+                    $doc->getTagsByName('arg'),
+                    $doc->getTagsByName('opt')
+                ));
+
+                array_unshift($signature, $name);
+
+                $command->setSignature(implode(' ', $signature));
+                $command->setDescription(trim($doc->getSummary()));
+            } else {
+                $command->setSignature($name);
+            }
+        }
 
         if ( ! $command instanceof Command) {
             throw new IllegalCommandException(
@@ -75,15 +82,9 @@ class Application extends SymfonyApplication implements ApplicationContract
             );
         }
 
-        $command->setContainer($this->container);
         $command->setUp();
 
         return $this->add($command);
-    }
-
-    public function displayError(Exception $e)
-    {
-        return parent::renderException($e, new ConsoleOutput());
     }
 
     /**
